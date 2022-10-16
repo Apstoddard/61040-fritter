@@ -18,7 +18,7 @@ const router = express.Router();
 /**
  * Get circles by author.
  *
- * @name GET /api/circles?authorId=id
+ * @name GET /api/circles?author=id
  *
  * @return {CircleResponse[]} - An array of circles created by user with id, authorId
  * @throws {400} - If authorId is not given
@@ -28,7 +28,7 @@ const router = express.Router();
 router.get(
   '/',
   async (req: Request, res: Response, next: NextFunction) => {
-    // Check if authorId query parameter was supplied
+    // Check if author query parameter was supplied
     if (req.query.author !== undefined) {
       next();
       return;
@@ -78,7 +78,7 @@ router.post(
 /**
  * Delete a circle
  *
- * @name DELETE /api/circles/:id
+ * @name DELETE /api/circles/:circleId
  *
  * @return {string} - A success message
  * @throws {403} - If the user is not logged in or is not the author of
@@ -103,7 +103,7 @@ router.delete(
 /**
  * Modify a circle
  *
- * @name PUT /api/circles/:id
+ * @name PUT /api/circles/:circleId
  *
  * @param {string} bio - the new bio for the circle
  * @return {CircleResponse} - the updated circle
