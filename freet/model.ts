@@ -11,16 +11,20 @@ import type {User} from '../user/model';
 export type Freet = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   authorId: Types.ObjectId;
+  circleId: Types.ObjectId;
   dateCreated: Date;
   content: string;
+  location: string;
   dateModified: Date;
 };
 
 export type PopulatedFreet = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   authorId: User;
+  circleId: Types.ObjectId;
   dateCreated: Date;
   content: string;
+  location: string;
   dateModified: Date;
 };
 
@@ -35,6 +39,12 @@ const FreetSchema = new Schema<Freet>({
     required: true,
     ref: 'User'
   },
+  circleId: {
+    // Use Types.ObjectId outside of the schema
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Circle'
+  },
   // The date the freet was created
   dateCreated: {
     type: Date,
@@ -42,6 +52,11 @@ const FreetSchema = new Schema<Freet>({
   },
   // The content of the freet
   content: {
+    type: String,
+    required: true
+  },
+  // The location of the freet
+  location: {
     type: String,
     required: true
   },

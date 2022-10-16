@@ -10,6 +10,11 @@ import {Schema, model} from 'mongoose';
 export type User = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  location: string;
+  bio: string;
   password: string;
   dateJoined: Date;
 };
@@ -20,6 +25,26 @@ export type User = {
 const UserSchema = new Schema({
   // The user's username
   username: {
+    type: String,
+    required: true
+  },
+  first_name: {
+    type: String,
+    required: true
+  },
+  last_name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  location: {
+    type: String,
+    required: true
+  },
+  bio: {
     type: String,
     required: true
   },

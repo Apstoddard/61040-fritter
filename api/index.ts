@@ -11,6 +11,7 @@ import dotenv from 'dotenv';
 import * as userValidator from '../user/middleware';
 import {userRouter} from '../user/router';
 import {freetRouter} from '../freet/router';
+import {circleRouter} from '../circle/router';
 
 // Load environmental variables
 dotenv.config({});

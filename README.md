@@ -313,3 +313,194 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+
+#### `GET /api/circles` - Get all the circles
+
+**Returns**
+
+- An array of all circles sorted in descending order by date created
+
+#### `GET /api/circles?author=USERNAME` - Get circles by author
+
+**Returns**
+
+- An array of circles created by user with username `author`
+
+**Throws**
+
+- `400` if `author` is not given
+- `404` if `author` is not a recognized username of any user
+
+#### `POST /api/circles` - Create a new circle
+
+**Body**
+
+- `title` _{string}_ - The title of the circle
+- `bio` _{string}_ - The bio of the circle
+- `category` _{string}_ - The category of the circle
+
+**Returns**
+
+- A success message
+- A object with the created circle
+
+**Throws**
+
+- `403` if the user is not logged in
+
+#### `DELETE /api/circles/:circleId?` - Delete an existing circle
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the author of the circle
+- `404` if the circleId is invalid
+
+#### `PUT /api/circles/:circleId?` - Update an existing circle
+
+**Body**
+
+- `bio` _{string}_ - The new bio of the circle
+
+**Returns**
+
+- A success message
+- An object with the updated circle
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the circleId is invalid
+- `403` if the user is not the author of the circle
+
+#### `GET /api/likes?freet=freetId` - Get likes by freetId
+
+**Returns**
+
+- An array of likes on freet with `freetId`
+
+**Throws**
+
+- `400` if `freetId` is not given
+- `404` if `freetId` is not a recognized freetId
+
+#### `GET /api/likes?user=USERNAME` - Get likes by user
+
+**Returns**
+
+- An array of likes made by user `username`
+
+**Throws**
+
+- `400` if `user` is not given
+- `404` if `user` is not a recognized username of any user
+
+#### `POST /api/likes` - Create a new like
+
+**Body**
+
+- `freetId` _{string}_ - The freetId of the freet to like
+
+**Returns**
+
+- A success message
+- A object with the created like
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user has already liked the freet
+
+#### `DELETE /api/likes/:freetId?` - Delete a like
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the like
+- `404` if the freetId is invalid
+
+#### `GET /api/follows?user=USERNAME` - Get follows by user
+
+**Returns**
+
+- An array of follows made by user `username`
+
+**Throws**
+
+- `400` if `user` is not given
+- `404` if `user` is not a recognized username of any user
+
+#### `POST /api/follows` - Create a new follow
+
+**Body**
+
+- `userId` _{string}_ - The userId of the user to follow
+
+**Returns**
+
+- A success message
+- A object with the created follow
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user has already followed the user
+
+#### `DELETE /api/follows/:userId?` - Delete a follow
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the follow
+- `404` if the userId is invalid
+
+#### `GET /api/subscriptions?user=USERNAME` - Get subscriptions by user
+
+**Returns**
+
+- An array of subscriptions made by user `username`
+
+**Throws**
+
+- `400` if `user` is not given
+- `404` if `user` is not a recognized username of any user
+
+#### `POST /api/subscriptions` - Create a new subscription
+
+**Body**
+
+- `circleId` _{string}_ - The circleId of the circle to subscribe to
+
+**Returns**
+
+- A success message
+- A object with the created subscription
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user has already subscribed to the circle
+
+#### `DELETE /api/subscriptions/:circleId?` - Delete a subscription
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the subscription
+- `404` if the circleId is invalid
