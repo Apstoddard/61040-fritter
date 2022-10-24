@@ -5,33 +5,30 @@ import UserCollection from '../user/collection';
 
 /**
  * This files contains a class that has the functionality to explore circles
- * stored in MongoDB, including adding, finding, updating, and deleting circles.
- * Feel free to add additional operations in this file.
- *
- * Note: HydratedDocument<Circle> is the output of the CircleModel() constructor,
- * and contains all the information in Circle. https://mongoosejs.com/docs/typescript.html
+ * stored in MongoDB
  */
 class CircleCollection {
   /**
    * Add a circle to the collection
    *
-   * @param {string} authorId - The id of the author of the circle
    * @param {string} title - The title of the circle
    * @param {string} bio - The description of the circle
    * @param {string} category - The category of the circle
-   * @return {Promise<HydratedDocument<Circle>>} - The newly created freet
+   * @param {string} author - The id of the author of the circle
+   *
+   * @return {Promise<HydratedDocument<Circle>>} - The newly created circle
    */
-  static async addOne(authorId: Types.ObjectId | string, title: string, bio: string, category: string): Promise<HydratedDocument<Circle>> {
+  static async addOne(title: string, bio: string, category: string, author: Types.ObjectId | string): Promise<HydratedDocument<Circle>> {
     const date = new Date();
     const circle = new CircleModel({
-      authorId,
       title,
       bio,
+      dateCreated: date,
       category,
-      dateCreated: date
+      author
     });
-    await circle.save(); // Saves circle to MongoDB
-    return circle.populate('authorId');
+    await circle.save();
+    return circle.populate('author');
   }
 
   /**
@@ -41,7 +38,17 @@ class CircleCollection {
    * @return {Promise<HydratedDocument<Circle>> | Promise<null> } - The circle with the given circleId, if any
    */
   static async findOne(circleId: Types.ObjectId | string): Promise<HydratedDocument<Circle>> {
-    return CircleModel.findOne({_id: circleId}).populate('authorId');
+    return CircleModel.findOne({_id: circleId}).populate('author');
+  }
+
+  /**
+   * Find a circle by title
+   *
+   * @param {string} title - The title of the circle to find
+   * @return {Promise<HydratedDocument<Circle>> | Promise<null> } - The circle with the given title, if any
+   */
+  static async findOneByTitle(title: string): Promise<HydratedDocument<Circle>> {
+    return CircleModel.findOne({title}).populate('author');
   }
 
   /**
@@ -50,33 +57,42 @@ class CircleCollection {
    * @return {Promise<HydratedDocument<Circle>[]>} - An array of all of the circles
    */
   static async findAll(): Promise<Array<HydratedDocument<Circle>>> {
-    // Retrieves circles and sorts them from most to least recent
-    return CircleModel.find({}).sort({dateCreated: -1}).populate('authorId');
+    return CircleModel.find({}).sort({dateCreated: -1}).populate('author');
   }
 
   /**
    * Get all the circles created by given author
    *
    * @param {string} username - The username of author of a circle
-   * @return {Promise<HydratedDocument<Circle>[]>} - An array of all of the circles
+   * @return {Promise<HydratedDocument<Circle>[]>} - An array of all of the circles by a user
    */
   static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Circle>>> {
     const author = await UserCollection.findOneByUsername(username);
-    return CircleModel.find({authorId: author._id}).populate('authorId');
+    return CircleModel.find({author: author._id}).populate('author');
   }
 
   /**
-   * Update a circle with anew bio
+   * Get all the circles in a given category
    *
-   * @param {string} circleId - The id of the circle to be updated
+   * @param {string} category - The category of a circle
+   * @return {Promise<HydratedDocument<Circle>[]>} - An array of all of the circles in the category
+   */
+  static async findAllByCategory(category: string): Promise<Array<HydratedDocument<Circle>>> {
+    return CircleModel.find({category}).populate('author');
+  }
+
+  /**
+   * Update a circle with a new bio
+   *
+   * @param {string} circle - The id of the circle to be updated
    * @param {string} bio - The new bio of the circle
    * @return {Promise<HydratedDocument<Circle>>} - The newly updated circle
    */
-  static async updateOne(circleId: Types.ObjectId | string, bio: string): Promise<HydratedDocument<Circle>> {
+  static async updateOneBio(circleId: Types.ObjectId | string, bio: string): Promise<HydratedDocument<Circle>> {
     const circle = await CircleModel.findOne({_id: circleId});
     circle.bio = bio;
     await circle.save();
-    return circle.populate('authorId');
+    return circle.populate('author');
   }
 
   /**
@@ -93,10 +109,10 @@ class CircleCollection {
   /**
    * Delete all the circles by the given author
    *
-   * @param {string} authorId - The id of author of the circle
+   * @param {string} author - The id of author of the circle
    */
-  static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
-    await CircleModel.deleteMany({authorId});
+  static async deleteMany(author: Types.ObjectId | string): Promise<void> {
+    await CircleModel.deleteMany({author});
   }
 }
 

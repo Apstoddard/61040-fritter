@@ -1,28 +1,37 @@
 import type {Types, PopulatedDoc, Document} from 'mongoose';
 import {Schema, model} from 'mongoose';
+import type {User} from '../user/model';
+import type {Circle} from '../circle/model';
 
 /**
- * This file defines the properties stored in a Follow
- * DO NOT implement operations here ---> use collection file
+ * This file defines the properties stored in a Subscribe
  */
 
-// Type definition for Follow on the backend
+// Type definition for Subscribe on the backend
 export type Subscribe = {
-  subscriberId: Types.ObjectId;
-  circleId: Types.ObjectId;
+  _id: Types.ObjectId;
+  user: Types.ObjectId;
+  circle: Types.ObjectId;
+  dateSubscribed: Date;
+};
+
+export type PopulatedSubscribe = {
+  _id: Types.ObjectId;
+  user: User;
+  circle: Circle;
   dateSubscribed: Date;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
-// Follow stored in this table will have these fields, with the
+// Subscribes stored in this table will have these fields, with the
 // type given by the type property, inside MongoDB
 const SubscribeSchema = new Schema<Subscribe>({
-  subscriberId: {
+  user: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'User'
   },
-  circleId: {
+  circle: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'Circle'

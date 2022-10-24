@@ -2,10 +2,13 @@ import type {HydratedDocument} from 'mongoose';
 import moment from 'moment';
 import type {User} from './model';
 
-// Update this if you add a property to the User type!
 type UserResponse = {
   _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
   username: string;
+  bio: string;
   dateJoined: string;
 };
 

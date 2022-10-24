@@ -68,11 +68,14 @@ router.delete(
  *
  * @name POST /api/users
  *
+ * @param {string} first_name - first name of user
+ * @param {string} last_name - last name of user
+ * @param {string} email - email of user
  * @param {string} username - username of user
  * @param {string} password - user's password
  * @return {UserResponse} - The created user
  * @throws {403} - If there is a user already logged in
- * @throws {409} - If username is already taken
+ * @throws {409} - If username or email is already taken
  * @throws {400} - If password or username is not in correct format
  *
  */
@@ -81,11 +84,13 @@ router.post(
   [
     userValidator.isUserLoggedOut,
     userValidator.isValidUsername,
+    userValidator.isValidEmail,
     userValidator.isUsernameNotAlreadyInUse,
+    userValidator.isEmailNotAlreadyInUse,
     userValidator.isValidPassword
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.addOne(req.body.username, req.body.password);
+    const user = await UserCollection.addOne(req.body.first_name, req.body.last_name, req.body.email, req.body.username, req.body.password);
     req.session.userId = user._id.toString();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.username}`,
@@ -99,11 +104,10 @@ router.post(
  *
  * @name PUT /api/users
  *
- * @param {string} username - The user's new username
- * @param {string} password - The user's new password
+ * @param {string} userDetails the updated user info
  * @return {UserResponse} - The updated user
  * @throws {403} - If user is not logged in
- * @throws {409} - If username already taken
+ * @throws {409} - If username or email already taken
  * @throws {400} - If username or password are not of the correct format
  */
 router.put(
@@ -111,7 +115,9 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     userValidator.isValidUsername,
+    userValidator.isValidEmail,
     userValidator.isUsernameNotAlreadyInUse,
+    userValidator.isEmailNotAlreadyInUse,
     userValidator.isValidPassword
   ],
   async (req: Request, res: Response) => {
@@ -141,6 +147,7 @@ router.delete(
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     await UserCollection.deleteOne(userId);
     await FreetCollection.deleteMany(userId);
+    /* ADD SYNCS */
     req.session.userId = undefined;
     res.status(200).json({
       message: 'Your account has been deleted successfully.'

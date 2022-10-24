@@ -1,34 +1,34 @@
-import type {HydratedDocument, Types} from 'mongoose';
+import type {HydratedDocument} from 'mongoose';
+import {Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
 
 /**
  * This files contains a class that has the functionality to explore freets
- * stored in MongoDB, including adding, finding, updating, and deleting freets.
- * Feel free to add additional operations in this file.
- *
- * Note: HydratedDocument<Freet> is the output of the FreetModel() constructor,
- * and contains all the information in Freet. https://mongoosejs.com/docs/typescript.html
+ * stored in MongoDB
  */
 class FreetCollection {
   /**
    * Add a freet to the collection
    *
-   * @param {string} authorId - The id of the author of the freet
-   * @param {string} content - The id of the content of the freet
+   * @param {string} content - The content of the freet
+   * @param {string} author - The author of the freet
+   * @param {string[]} circles - The circles of the freet
+   *
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async addOne(content: string, author: Types.ObjectId | string, circles: Types.ObjectId[] | string[]): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const freet = new FreetModel({
-      authorId,
-      dateCreated: date,
       content,
-      dateModified: date
+      author,
+      circles,
+      dateCreated: date
     });
-    await freet.save(); // Saves freet to MongoDB
-    return freet.populate('authorId');
+    await freet.save();
+    await freet.populate('author');
+    return freet.populate('circles');
   }
 
   /**
@@ -38,7 +38,7 @@ class FreetCollection {
    * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
    */
   static async findOne(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return FreetModel.findOne({_id: freetId}).populate('authorId');
+    return FreetModel.findOne({_id: freetId}).populate('author').populate('circles');
   }
 
   /**
@@ -48,7 +48,7 @@ class FreetCollection {
    */
   static async findAll(): Promise<Array<HydratedDocument<Freet>>> {
     // Retrieves freets and sorts them from most to least recent
-    return FreetModel.find({}).sort({dateModified: -1}).populate('authorId');
+    return FreetModel.find({}).sort({dateModified: -1}).populate('author').populate('circles');
   }
 
   /**
@@ -59,22 +59,22 @@ class FreetCollection {
    */
   static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Freet>>> {
     const author = await UserCollection.findOneByUsername(username);
-    return FreetModel.find({authorId: author._id}).populate('authorId');
+    return FreetModel.find({author: author._id}).populate('author').populate('circles');
   }
 
   /**
-   * Update a freet with the new content
+   * Update a freet with new circles
    *
-   * @param {string} freetId - The id of the freet to be updated
-   * @param {string} content - The new content of the freet
-   * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
+   * @param {string} circle - The id of the circle to be updated
+   * @param {string} bio - The new bio of the circle
+   * @return {Promise<HydratedDocument<Circle>>} - The newly updated circle
    */
-  static async updateOne(freetId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+  static async updateOne(freetId: Types.ObjectId | string, circleIds: [Types.ObjectId | string]): Promise<HydratedDocument<Freet>> {
     const freet = await FreetModel.findOne({_id: freetId});
-    freet.content = content;
-    freet.dateModified = new Date();
+    freet.circles = circleIds.map(id => new Types.ObjectId(id));
     await freet.save();
-    return freet.populate('authorId');
+    await freet.populate('circles');
+    return freet.populate('author');
   }
 
   /**
@@ -93,8 +93,8 @@ class FreetCollection {
    *
    * @param {string} authorId - The id of author of freets
    */
-  static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
-    await FreetModel.deleteMany({authorId});
+  static async deleteMany(author: Types.ObjectId | string): Promise<void> {
+    await FreetModel.deleteMany({author});
   }
 }
 

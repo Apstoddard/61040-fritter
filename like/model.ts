@@ -1,28 +1,37 @@
 import type {Types, PopulatedDoc, Document} from 'mongoose';
 import {Schema, model} from 'mongoose';
+import type {User} from '../user/model';
+import type {Freet} from '../freet/model';
 
 /**
  * This file defines the properties stored in a Like
- * DO NOT implement operations here ---> use collection file
  */
 
 // Type definition for Like on the backend
 export type Like = {
-  userId: Types.ObjectId;
-  freetId: Types.ObjectId;
+  _id: Types.ObjectId;
+  user: Types.ObjectId;
+  freet: Types.ObjectId;
+  dateLiked: Date;
+};
+
+export type PopulatedLike = {
+  _id: Types.ObjectId;
+  user: User;
+  freet: Freet;
   dateLiked: Date;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
-// Like stored in this table will have these fields, with the
+// Likes stored in this table will have these fields, with the
 // type given by the type property, inside MongoDB
 const LikeSchema = new Schema<Like>({
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'User'
   },
-  freetId: {
+  freet: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'Freet'

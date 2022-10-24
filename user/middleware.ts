@@ -43,6 +43,25 @@ const isValidUsername = (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
+ * Checks if a email in req.body is valid, that is, it matches the email regex
+ */
+const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
+  if (req.body.email !== undefined) {
+    const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
+    if (!emailRegex.test(req.body.email)) {
+      res.status(400).json({
+        error: {
+          email: 'Email must be nonempty and valid.'
+        }
+      });
+      return;
+    }
+  }
+
+  next();
+};
+
+/**
  * Checks if a password in req.body is valid, that is, at 6-50 characters long without any spaces
  */
 const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
@@ -102,6 +121,26 @@ const isUsernameNotAlreadyInUse = async (req: Request, res: Response, next: Next
 };
 
 /**
+ * Checks if a email in req.body is already in use
+ */
+const isEmailNotAlreadyInUse = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await UserCollection.findOneByEmail(req.body.email);
+
+  // If the current session user wants to change their email to one which matches
+  // the current one irrespective of the case, we should allow them to do so
+  if (!user || (user?._id.toString() === req.session.userId)) {
+    next();
+    return;
+  }
+
+  res.status(409).json({
+    error: {
+      email: 'An account with this email already exists.'
+    }
+  });
+};
+
+/**
  * Checks if the user is logged in, that is, whether the userId is set in session
  */
 const isUserLoggedIn = (req: Request, res: Response, next: NextFunction) => {
@@ -132,9 +171,14 @@ const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
- * Checks if a user with userId as author id in req.query exists
+ * Checks if a user with username as author in req.query exists
  */
 const isAuthorExists = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.query.author === undefined) {
+    next();
+    return;
+  }
+
   if (!req.query.author) {
     res.status(400).json({
       error: 'Provided author username must be nonempty.'
@@ -153,13 +197,155 @@ const isAuthorExists = async (req: Request, res: Response, next: NextFunction) =
   next();
 };
 
+/**
+ * Checks if a user with username as followers in req.query exists
+ */
+const isFollowersExists = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.query.followers === undefined) {
+    next();
+    return;
+  }
+
+  if (!req.query.followers) {
+    res.status(400).json({
+      error: 'Provided followers username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.query.followers as string);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with username ${req.query.followers as string} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if a user with username as following in req.query exists
+ */
+const isFollowingExists = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.query.following === undefined) {
+    next();
+    return;
+  }
+
+  if (!req.query.following) {
+    res.status(400).json({
+      error: 'Provided following username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.query.following as string);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with username ${req.query.following as string} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if a user with username in req.params exists
+ */
+const isUserExist = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.params.user === undefined) {
+    next();
+    return;
+  }
+
+  if (!req.params.user) {
+    res.status(400).json({
+      error: 'Provided username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.params.user);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with username ${req.params.user} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if a user with username in req.body exists
+ */
+const isBodyUserExist = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.body.user === undefined) {
+    next();
+    return;
+  }
+
+  if (!req.body.user) {
+    res.status(400).json({
+      error: 'Provided username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.body.user as string);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with username ${req.body.user as string} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if a user with username in req.query exists
+ */
+const isQueryUserExist = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.query.user === undefined) {
+    next();
+    return;
+  }
+
+  if (!req.query.user) {
+    res.status(400).json({
+      error: 'Provided username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.query.user as string);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with username ${req.query.user as string} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
   isUserLoggedOut,
   isUsernameNotAlreadyInUse,
+  isEmailNotAlreadyInUse,
   isAccountExists,
   isAuthorExists,
+  isFollowersExists,
+  isFollowingExists,
+  isUserExist,
+  isBodyUserExist,
+  isQueryUserExist,
   isValidUsername,
+  isValidEmail,
   isValidPassword
 };

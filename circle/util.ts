@@ -1,14 +1,14 @@
 import type {HydratedDocument} from 'mongoose';
 import moment from 'moment';
-import type {Circle} from '../circle/model';
+import type {Circle, PopulatedCircle} from '../circle/model';
 
 type CircleResponse = {
   _id: string;
-  authorId: string;
   title: string;
   bio: string;
-  category: string;
   dateCreated: string;
+  category: string;
+  author: string;
 };
 
 /**
@@ -27,16 +27,17 @@ const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:
  * @returns {CircleResponse} - The circle object formatted for the frontend
  */
 const constructCircleResponse = (circle: HydratedDocument<Circle>): CircleResponse => {
-  const circleCopy: Circle = {
+  const circleCopy: PopulatedCircle = {
     ...circle.toObject({
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-
+  const {username} = circleCopy.author;
+  delete circleCopy.author;
   return {
     ...circleCopy,
     _id: circleCopy._id.toString(),
-    authorId: circleCopy.authorId.toString(),
+    author: username,
     dateCreated: formatDate(circle.dateCreated)
   };
 };

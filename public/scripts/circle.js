@@ -17,6 +17,12 @@ function viewCirclesByAuthor(fields) {
     .catch(showResponse);
 }
 
+function viewCirclesByCategory(fields) {
+  fetch(`/api/circles?category=${fields.category}`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function createCircle(fields) {
   fetch('/api/circles', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
@@ -30,7 +36,7 @@ function editCircle(fields) {
 }
 
 function deleteCircle(fields) {
-  fetch(`/api/circles/${fields.id}`, {method: 'DELETE'})
+  fetch(`/api/circles/${fields.circleId}`, {method: 'DELETE'})
     .then(showResponse)
     .catch(showResponse);
 }

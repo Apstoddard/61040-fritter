@@ -18,11 +18,11 @@ const router = express.Router();
 /**
  * Get freets by author.
  *
- * @name GET /api/freets?authorId=id
+ * @name GET /api/freets?author=username
  *
- * @return {FreetResponse[]} - An array of freets created by user with id, authorId
- * @throws {400} - If authorId is not given
- * @throws {404} - If no user has given authorId
+ * @return {FreetResponse[]} - An array of freets created by user username
+ * @throws {400} - If username is not given
+ * @throws {404} - If no user has given username
  *
  */
 router.get(
@@ -54,6 +54,7 @@ router.get(
  * @name POST /api/freets
  *
  * @param {string} content - The content of the freet
+ * @param {string[]} circles - The ids of the circles the freet is in
  * @return {FreetResponse} - The created freet
  * @throws {403} - If the user is not logged in
  * @throws {400} - If the freet content is empty or a stream of empty spaces
@@ -67,7 +68,7 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.addOne(userId, req.body.content);
+    const freet = await FreetCollection.addOne(req.body.content, userId, req.body.circles);
 
     res.status(201).json({
       message: 'Your freet was created successfully.',
@@ -119,11 +120,10 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
-    freetValidator.isValidFreetModifier,
-    freetValidator.isValidFreetContent
+    freetValidator.isValidFreetModifier
   ],
   async (req: Request, res: Response) => {
-    const freet = await FreetCollection.updateOne(req.params.freetId, req.body.content);
+    const freet = await FreetCollection.updateOne(req.params.freetId, req.body.circles);
     res.status(200).json({
       message: 'Your freet was updated successfully.',
       freet: util.constructFreetResponse(freet)

@@ -2,13 +2,12 @@ import type {HydratedDocument} from 'mongoose';
 import moment from 'moment';
 import type {Freet, PopulatedFreet} from '../freet/model';
 
-// Update this if you add a property to the Freet type!
 type FreetResponse = {
   _id: string;
-  author: string;
-  dateCreated: string;
   content: string;
-  dateModified: string;
+  author: string;
+  circles: string[];
+  dateCreated: string;
 };
 
 /**
@@ -32,14 +31,16 @@ const constructFreetResponse = (freet: HydratedDocument<Freet>): FreetResponse =
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  const {username} = freetCopy.authorId;
-  delete freetCopy.authorId;
+  const {username} = freetCopy.author;
+  const circles = freetCopy.circles.map(circle => circle.title);
+  delete freetCopy.author;
+  delete freetCopy.circles;
   return {
     ...freetCopy,
     _id: freetCopy._id.toString(),
     author: username,
-    dateCreated: formatDate(freet.dateCreated),
-    dateModified: formatDate(freet.dateModified)
+    circles,
+    dateCreated: formatDate(freet.dateCreated)
   };
 };
 

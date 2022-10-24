@@ -30,8 +30,10 @@ function showResponse(response) {
 const formsAndHandlers = {
   'create-user': createUser,
   'delete-user': deleteUser,
+  'change-email': changeEmail,
   'change-username': changeUsername,
   'change-password': changePassword,
+  'change-bio': changeBio,
   'sign-in': signIn,
   'sign-out': signOut,
   'view-all-freets': viewAllFreets,
@@ -41,9 +43,22 @@ const formsAndHandlers = {
   'delete-freet': deleteFreet,
   'view-all-circles': viewAllCircles,
   'view-circles-by-author': viewCirclesByAuthor,
+  'view-circles-by-category': viewCirclesByCategory,
   'create-circle': createCircle,
   'edit-circle': editCircle,
-  'delete-circle': deleteCircle
+  'delete-circle': deleteCircle,
+  'view-likes-by-author': viewLikesByAuthor,
+  'view-likes-by-freet': viewLikesByFreetId,
+  'create-like': createLike,
+  'delete-like': deleteLike,
+  'view-following': viewFollowing,
+  'view-followers': viewFollowers,
+  'create-follow': createFollow,
+  'delete-follow': deleteFollow,
+  'view-subscriptions': viewSubscriptions,
+  'view-subscribers': viewSubscribers,
+  'create-subscribe': createSubscribe,
+  'delete-subscribe': deleteSubscribe
 };
 
 // Attach handlers to forms

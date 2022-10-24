@@ -8,6 +8,9 @@
   <script src="/scripts/freet.js"></script>
   <script src="/scripts/user.js"></script>
   <script src="/scripts/circle.js"></script>
+  <script src="/scripts/like.js"></script>
+  <script src="/scripts/follow.js"></script>
+  <script src="/scripts/subscribe.js"></script>
   <script src="/scripts/index.js"></script>
 </head>
 
@@ -20,8 +23,21 @@
     <section id="operations-container">
       <h2>Operations:</h2>
       <div class="scrollbox">
+        <h1>User Actions</h1>
         <form id="create-user">
           <h3>Create User</h3>
+          <div>
+            <label for="first_name">First Name:</label>
+            <input id="first_name" name="first_name">
+          </div>
+          <div>
+            <label for="last_name">Last Name:</label>
+            <input id="last_name" name="last_name">
+          </div>
+          <div>
+            <label for="email">Email:</label>
+            <input id="email" name="email">
+          </div>
           <div>
             <label for="username">Username:</label>
             <input id="username" name="username">
@@ -36,6 +52,15 @@
         <form id="delete-user">
           <h3>Delete User</h3>
           <input type="submit" value="Delete User">
+        </form>
+
+        <form id="change-email">
+          <h3>Change Email</h3>
+          <div>
+            <label for="email">New Email:</label>
+            <input id="email" name="email">
+          </div>
+          <input type="submit" value="Change Email">
         </form>
 
         <form id="change-username">
@@ -56,6 +81,15 @@
           <input type="submit" value="Change Password">
         </form>
 
+        <form id="change-bio">
+          <h3>Change Bio</h3>
+          <div>
+            <label for="bio">New Bio:</label>
+            <textarea id="bio" name="bio"></textarea>
+          </div>
+          <input type="submit" value="Change Bio">
+        </form>
+
         <form id="sign-in">
           <h3>Sign In</h3>
           <div>
@@ -74,6 +108,8 @@
           <input type="submit" value="Sign out">
         </form>
 
+        <br/>
+        <h1>Freet Actions</h1>
         <form id="view-all-freets">
             <h3>View All Freets</h3>
             <input type="submit" value="View All Freets">
@@ -94,6 +130,13 @@
             <label for="content">Content:</label>
             <textarea id="content" name="content"></textarea>
           </div>
+          <div>
+            <label for="circles">Circles:</label>
+            <select name="circles" id="circles" multiple>
+              <option value="6356d6486f9229c1e030fd78">Cambridge</option>
+              <option value="6356d6686f9229c1e030fd89">Gaming</option>
+            </select>
+          </div>
           <input type="submit" value="Create Freet">
         </form>
 
@@ -104,8 +147,10 @@
             <input id="id" name="id">
           </div>
           <div>
-            <label for="content">Content:</label>
-            <textarea id="content" name="content"></textarea>
+            <select name="circles" id="circles" multiple>
+              <option value="6356d6486f9229c1e030fd78">Cambridge</option>
+              <option value="6356d6686f9229c1e030fd89">Gaming</option>
+            </select>
           </div>
           <input type="submit" value="Edit Freet">
         </form>
@@ -118,8 +163,9 @@
           </div>
           <input type="submit" value="Delete Freet">
         </form>
-
-
+        
+        <br/>
+        <h1>Circle Actions</h1>
         <form id="view-all-circles">
           <h3>View All Circles</h3>
           <input type="submit" value="View All Circles">
@@ -132,6 +178,15 @@
             <input id="author" name="author">
           </div>
           <input type="submit" value="View Circles By Author">
+        </form>
+
+        <form id="view-circles-by-category">
+          <h3>View Circles By Category</h3>
+          <div>
+            <label for="category">Category:</label>
+            <input id="category" name="category">
+          </div>
+          <input type="submit" value="View Circles By Category">
         </form>
 
         <form id="create-circle">
@@ -154,8 +209,8 @@
         <form id="edit-circle">
           <h3>Edit Circle</h3>
           <div>
-            <label for="circleId">ID:</label>
-            <input id="circleId" name="circleId">
+            <label for="id">ID:</label>
+            <input id="id" name="id">
           </div>
           <div>
             <label for="bio">Bio:</label>
@@ -173,6 +228,122 @@
           <input type="submit" value="Delete Circle">
         </form>
 
+        <br/>
+        <h1>Like Actions</h1>
+
+        <form id="view-likes-by-author">
+          <h3>View Likes By Author</h3>
+          <div>
+            <label for="author">Author:</label>
+            <input id="author" name="author">
+          </div>
+          <input type="submit" value="View Likes By Author">
+        </form>
+
+        <form id="view-likes-by-freet">
+          <h3>View Likes By Freet</h3>
+          <div>
+            <label for="freetId">Freet ID:</label>
+            <input id="freetId" name="freetId">
+          </div>
+          <input type="submit" value="View Likes By Freet ID">
+        </form>
+
+        <form id="create-like">
+          <h3>Create Like</h3>
+          <div>
+            <label for="freetId">Freet ID:</label>
+            <input id="freetId" name="freetId">
+          </div>
+          <input type="submit" value="Create Like">
+        </form>
+
+        <form id="delete-like">
+          <h3>Delete Like</h3>
+          <div>
+            <label for="freetId">Freet ID:</label>
+            <input id="freetId" name="freetId">
+          </div>
+          <input type="submit" value="Delete Like">
+        </form>
+
+        <br/>
+        <h1>Follow Actions</h1>
+
+        <form id="view-following">
+          <h3>View Users a User is Following</h3>
+          <div>
+            <label for="following">Username:</label>
+            <input id="following" name="following">
+          </div>
+          <input type="submit" value="View Following">
+        </form>
+
+        <form id="view-followers">
+          <h3>View a User's Followers</h3>
+          <div>
+            <label for="followers">Username:</label>
+            <input id="followers" name="followers">
+          </div>
+          <input type="submit" value="View Followers">
+        </form>
+
+        <form id="create-follow">
+          <h3>Follow a User</h3>
+          <div>
+            <label for="user">Username:</label>
+            <input id="user" name="user">
+          </div>
+          <input type="submit" value="Follow">
+        </form>
+
+        <form id="delete-follow">
+          <h3>Unfollow a User:</h3>
+          <div>
+            <label for="user">Username:</label>
+            <input id="user" name="user">
+          </div>
+          <input type="submit" value="Unfollow">
+        </form>
+
+        <br/>
+        <h1>Subscription Actions</h1>
+
+        <form id="view-subscriptions">
+          <h3>View a User's Subscriptions</h3>
+          <div>
+            <label for="user">Username:</label>
+            <input id="user" name="user">
+          </div>
+          <input type="submit" value="View Subscriptions">
+        </form>
+
+        <form id="view-subscribers">
+          <h3>View Subscribers to a Circle</h3>
+          <div>
+            <label for="circleId">Circle ID:</label>
+            <input id="circleId" name="circleId">
+          </div>
+          <input type="submit" value="View Subscribers">
+        </form>
+
+        <form id="create-subscribe">
+          <h3>Subscribe to a Circle</h3>
+          <div>
+            <label for="circleId">Circle ID:</label>
+            <input id="circleId" name="circleId">
+          </div>
+          <input type="submit" value="Subscribe">
+        </form>
+
+        <form id="delete-subscribe">
+          <h3>Unsubscribe to a Circle:</h3>
+          <div>
+            <label for="circleId">Circle ID:</label>
+            <input id="circleId" name="circleId">
+          </div>
+          <input type="submit" value="circleId">
+        </form>
 
       </div>
     </section>

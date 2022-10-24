@@ -3,17 +3,15 @@ import {Schema, model} from 'mongoose';
 
 /**
  * This file defines the properties stored in a User
- * DO NOT implement operations here ---> use collection file
  */
 
 // Type definition for User on the backend
 export type User = {
-  _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  username: string;
+  _id: Types.ObjectId;
   first_name: string;
   last_name: string;
   email: string;
-  location: string;
+  username: string;
   bio: string;
   password: string;
   dateJoined: Date;
@@ -23,11 +21,6 @@ export type User = {
 // Users stored in this table will have these fields, with the
 // type given by the type property, inside MongoDB
 const UserSchema = new Schema({
-  // The user's username
-  username: {
-    type: String,
-    required: true
-  },
   first_name: {
     type: String,
     required: true
@@ -40,20 +33,18 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  location: {
+  username: {
     type: String,
     required: true
   },
   bio: {
     type: String,
-    required: true
+    required: false
   },
-  // The user's password
   password: {
     type: String,
     required: true
   },
-  // The date the user joined
   dateJoined: {
     type: Date,
     required: true

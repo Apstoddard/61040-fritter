@@ -18,18 +18,27 @@ const router = express.Router();
 /**
  * Get circles by author.
  *
- * @name GET /api/circles?author=id
+ * @name GET /api/circles?author=username
  *
- * @return {CircleResponse[]} - An array of circles created by user with id, authorId
- * @throws {400} - If authorId is not given
- * @throws {404} - If no user has given authorId
+ * @return {CircleResponse[]} - An array of circles created by user username
+ * @throws {400} - If username is not given
+ * @throws {404} - If no user has given username
+ *
+ */
+/**
+ * Get circles by category.
+ *
+ * @name GET /api/circles?category=category
+ *
+ * @return {CircleResponse[]} - An array of circles in category
+ * @throws {400} - If username is not given
+ * @throws {404} - If no user has given username
  *
  */
 router.get(
   '/',
   async (req: Request, res: Response, next: NextFunction) => {
-    // Check if author query parameter was supplied
-    if (req.query.author !== undefined) {
+    if (req.query.author !== undefined || req.query.category !== undefined) {
       next();
       return;
     }
@@ -41,9 +50,22 @@ router.get(
   [
     userValidator.isAuthorExists
   ],
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (req.query.author === undefined) {
+      next();
+      return;
+    }
+
     const authorCircles = await CircleCollection.findAllByUsername(req.query.author as string);
     const response = authorCircles.map(util.constructCircleResponse);
+    res.status(200).json(response);
+  },
+  [
+    circleValidator.isCategoryExists
+  ],
+  async (req: Request, res: Response) => {
+    const categoryCircles = await CircleCollection.findAllByCategory(req.query.category as string);
+    const response = categoryCircles.map(util.constructCircleResponse);
     res.status(200).json(response);
   }
 );
@@ -62,11 +84,12 @@ router.get(
 router.post(
   '/',
   [
-    userValidator.isUserLoggedIn
+    userValidator.isUserLoggedIn,
+    circleValidator.isCircleTitleNotAlreadyInUse
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const circle = await CircleCollection.addOne(userId, req.body.title, req.body.bio, req.body.category);
+    const circle = await CircleCollection.addOne(req.body.title, req.body.bio, req.body.category, userId);
 
     res.status(201).json({
       message: 'Your circle was created successfully.',
@@ -116,10 +139,10 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     circleValidator.isCircleExists,
-    circleValidator.isValidCircleModifier,
+    circleValidator.isValidCircleModifier
   ],
   async (req: Request, res: Response) => {
-    const circle = await CircleCollection.updateOne(req.params.circleId, req.body.bio);
+    const circle = await CircleCollection.updateOneBio(req.params.circleId, req.body.bio);
     res.status(200).json({
       message: 'Your circle was updated successfully.',
       circle: util.constructCircleResponse(circle)

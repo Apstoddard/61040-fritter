@@ -9,6 +9,12 @@ function createUser(fields) {
     .catch(showResponse);
 }
 
+function changeEmail(fields) {
+  fetch('/api/users', {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function changeUsername(fields) {
   fetch('/api/users', {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
@@ -16,6 +22,12 @@ function changeUsername(fields) {
 }
 
 function changePassword(fields) {
+  fetch('/api/users', {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function changeBio(fields) {
   fetch('/api/users', {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)
     .catch(showResponse);
