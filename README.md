@@ -197,6 +197,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Body**
 
 - `content` _{string}_ - The content of the freet
+- `circles` _{string[]}_ - The ids of the circles the freet is in
 
 **Returns**
 
@@ -221,7 +222,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not the author of the freet
 - `404` if the freetId is invalid
 
-#### `PUT /api/freets/:freetId?` - Update an existing freet
+#### `PUT /api/freets/:id?` - Update an existing freet
 
 **Body**
 
@@ -272,6 +273,9 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Body**
 
+- `first_name` _{string}_ - The user's first name
+- `last_name` _{string}_ - The user's last name
+- `email` _{string}_ - The user's email
 - `username` _{string}_ - The user's username
 - `password` _{string}_ - The user's password
 
@@ -290,8 +294,10 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Body** _(no need to add fields that are not being changed)_
 
+- `email` _{string}_ - The user's email
 - `username` _{string}_ - The user's username
 - `password` _{string}_ - The user's password
+- `bio` _{string}_ - The user's bio
 
 **Returns**
 
@@ -314,6 +320,12 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
+#### `GET /api/users` - List all users
+
+**Returns**
+
+- An array of user objects
+
 #### `GET /api/circles` - Get all the circles
 
 **Returns**
@@ -330,6 +342,18 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `400` if `author` is not given
 - `404` if `author` is not a recognized username of any user
+
+#### `GET /api/circles?category=CATEGORY` - Get circles by category
+
+**Returns**
+
+- An array of circles in category `category`
+
+**Throws**
+
+- `400` if `category` is not given
+- `404` if `category` is not a category used by any circle
+
 
 #### `POST /api/circles` - Create a new circle
 
@@ -377,7 +401,8 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if the circleId is invalid
 - `403` if the user is not the author of the circle
 
-#### `GET /api/likes?freet=freetId` - Get likes by freetId
+
+#### `GET /api/likes?freetId=freetId` - Get likes by freetId
 
 **Returns**
 
@@ -388,7 +413,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `400` if `freetId` is not given
 - `404` if `freetId` is not a recognized freetId
 
-#### `GET /api/likes?user=USERNAME` - Get likes by user
+#### `GET /api/likes?author=USERNAME` - Get likes by user
 
 **Returns**
 
@@ -396,8 +421,8 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Throws**
 
-- `400` if `user` is not given
-- `404` if `user` is not a recognized username of any user
+- `400` if `author` is not given
+- `404` if `author` is not a recognized username of any user
 
 #### `POST /api/likes` - Create a new like
 
@@ -427,22 +452,33 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not the creator of the like
 - `404` if the freetId is invalid
 
-#### `GET /api/follows?user=USERNAME` - Get follows by user
+#### `GET /api/follows?following=USERNAME` - Get all the users that a user follows
 
 **Returns**
 
-- An array of follows made by user `username`
+- An array of all the users that `username` follows
 
 **Throws**
 
-- `400` if `user` is not given
-- `404` if `user` is not a recognized username of any user
+- `400` if `username` is not given
+- `404` if `username` is not a recognized username of any user
+
+#### `GET /api/follows?followers=USERNAME` - Get all of a user's followers
+
+**Returns**
+
+- An array of all the users that follow `username` 
+
+**Throws**
+
+- `400` if `username` is not given
+- `404` if `username` is not a recognized username of any user
 
 #### `POST /api/follows` - Create a new follow
 
 **Body**
 
-- `userId` _{string}_ - The userId of the user to follow
+- `user` _{string}_ - The user to follow
 
 **Returns**
 
@@ -454,7 +490,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `403` if the user has already followed the user
 
-#### `DELETE /api/follows/:userId?` - Delete a follow
+#### `DELETE /api/follows/:id?` - Delete a follow
 
 **Returns**
 
@@ -464,7 +500,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 - `403` if the user is not the creator of the follow
-- `404` if the userId is invalid
+- `404` if the follow doesn't exist
 
 #### `GET /api/subscriptions?user=USERNAME` - Get subscriptions by user
 
@@ -476,6 +512,17 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `400` if `user` is not given
 - `404` if `user` is not a recognized username of any user
+
+#### `GET /api/subscriptions?circleId=CIRCLEID` - Get subscribers of a circle
+
+**Returns**
+
+- An array of subscribe objects where the user is following `circleId`
+
+**Throws**
+
+- `400` if `circleId` is not given
+- `404` if `circleId` is not a recognized circleId
 
 #### `POST /api/subscriptions` - Create a new subscription
 

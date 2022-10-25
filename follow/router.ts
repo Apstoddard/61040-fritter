@@ -70,6 +70,7 @@ router.get(
  * @param {string} user - The user to follow
  * @return {FollowResponse} - The created follow
  * @throws {403} - If the user is not logged in
+ * @throws {403} - If the user is already followed
  */
 router.post(
   '/',
