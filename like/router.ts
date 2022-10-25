@@ -33,8 +33,12 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.freetId) {
       next();
-    } else {
+    } else if (req.query.author) {
       next('route');
+    } else {
+      res.status(400).json({
+        error: 'A query parameter must be specified.'
+      });
     }
   },
   [

@@ -28,6 +28,7 @@ function showResponse(response) {
 
 // Map form (by id) to the function that should be called on submit
 const formsAndHandlers = {
+  'list-users': listUsers,
   'create-user': createUser,
   'delete-user': deleteUser,
   'change-email': changeEmail,
@@ -68,7 +69,9 @@ function init() {
     form.onsubmit = e => {
       e.preventDefault();
       const formData = new FormData(form);
-      handler(Object.fromEntries(formData.entries()));
+      const rawData = Object.fromEntries(formData.entries());
+      const cleanedData = Object.prototype.hasOwnProperty.call(rawData, 'circles') ? {...rawData, circles: formData.getAll('circles')} : rawData;
+      handler(cleanedData);
       return false; // Don't reload page
     };
   });

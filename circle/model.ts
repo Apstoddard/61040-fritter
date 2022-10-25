@@ -35,7 +35,7 @@ const CircleSchema = new Schema<Circle>({
   },
   bio: {
     type: String,
-    required: true
+    required: false
   },
   dateCreated: {
     type: Date,

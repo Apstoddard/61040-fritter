@@ -1,3 +1,8 @@
+import CircleCollection from '../circle/collection';
+import FollowCollection from '../follow/collection';
+import FreetCollection from '../freet/collection';
+import LikeCollection from '../like/collection';
+import SubscribeCollection from '../subscribe/collection';
 import type {HydratedDocument, Types} from 'mongoose';
 import type {User} from './model';
 import UserModel from './model';
@@ -24,6 +29,15 @@ class UserCollection {
     const user = new UserModel({first_name, last_name, email, username, bio, password, dateJoined});
     await user.save();
     return user;
+  }
+
+  /**
+   * Find all users
+   *
+   * @return {Promise<Array<HydratedDocument<User>>>} - Array of all users
+   */
+  static async findAll(): Promise<Array<HydratedDocument<User>>> {
+    return UserModel.find({});
   }
 
   /**
@@ -114,6 +128,11 @@ class UserCollection {
    * @return {Promise<Boolean>} - true if the user has been deleted, false otherwise
    */
   static async deleteOne(userId: Types.ObjectId | string): Promise<boolean> {
+    await FreetCollection.deleteMany(userId);
+    await CircleCollection.deleteMany(userId);
+    await LikeCollection.deleteManyByUser(userId);
+    await FollowCollection.deleteMany(userId);
+    await SubscribeCollection.deleteManyByUser(userId);
     const user = await UserModel.deleteOne({_id: userId});
     return user !== null;
   }

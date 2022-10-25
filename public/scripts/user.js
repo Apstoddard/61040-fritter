@@ -3,6 +3,12 @@
  * e.g. for createUser, fields has properites 'username' and 'password'
  */
 
+function listUsers(fields) {
+  fetch('/api/users')
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function createUser(fields) {
   fetch('/api/users', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)

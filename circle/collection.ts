@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Circle} from './model';
 import CircleModel from './model';
 import UserCollection from '../user/collection';
+import SubscribeCollection from '../subscribe/collection';
 
 /**
  * This files contains a class that has the functionality to explore circles
@@ -102,6 +103,7 @@ class CircleCollection {
    * @return {Promise<Boolean>} - true if the circle has been deleted, false otherwise
    */
   static async deleteOne(circleId: Types.ObjectId | string): Promise<boolean> {
+    await SubscribeCollection.deleteManyByCircle(circleId);
     const circle = await CircleModel.deleteOne({_id: circleId});
     return circle !== null;
   }

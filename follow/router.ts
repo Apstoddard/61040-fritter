@@ -32,8 +32,12 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.following) {
       next();
-    } else {
+    } else if (req.query.followers) {
       next('route');
+    } else {
+      res.status(400).json({
+        error: 'A query parameter must be specified.'
+      });
     }
   },
   [

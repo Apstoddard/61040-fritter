@@ -3,6 +3,7 @@ import {Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
+import LikeCollection from '../like/collection';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -71,7 +72,7 @@ class FreetCollection {
    */
   static async updateOne(freetId: Types.ObjectId | string, circleIds: [Types.ObjectId | string]): Promise<HydratedDocument<Freet>> {
     const freet = await FreetModel.findOne({_id: freetId});
-    freet.circles = circleIds.map(id => new Types.ObjectId(id));
+    freet.circles = circleIds? circleIds.map(id => new Types.ObjectId(id)) : [];
     await freet.save();
     await freet.populate('circles');
     return freet.populate('author');
@@ -84,6 +85,7 @@ class FreetCollection {
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
+    await LikeCollection.deleteManyByFreet(freetId);
     const freet = await FreetModel.deleteOne({_id: freetId});
     return freet !== null;
   }

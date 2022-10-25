@@ -34,8 +34,12 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.user) {
       next();
-    } else {
+    } else if (req.query.circleId) {
       next('route');
+    } else {
+      res.status(400).json({
+        error: 'A query parameter must be specified.'
+      });
     }
   },
   [

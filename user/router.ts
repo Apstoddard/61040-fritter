@@ -155,4 +155,21 @@ router.delete(
   }
 );
 
+/**
+ * Get all users
+ *
+ * @name GET /api/users
+ *
+ * @return {UserResponse[]} - An array of all users
+ *
+ */
+router.get(
+  '/',
+  async (req: Request, res: Response) => {
+    const allUsers = await UserCollection.findAll();
+    const response = allUsers.map(util.constructUserResponse);
+    res.status(200).json(response);
+  }
+);
+
 export {router as userRouter};
